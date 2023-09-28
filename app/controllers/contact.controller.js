@@ -19,8 +19,28 @@ module.exports.create = async (req, res, next) => {
     }
 }
 
-module.exports.findAll = (req, res) => {
-    res.send({ message: 'find all handler'})
+module.exports.findAll = async (req, res, next) => {
+    let documents = []
+    try {
+        const contactService = new ContactService(MongoDB.client)
+        const { name } = req.query
+        
+        if (name) {
+            documents = await contactService.findByName(name)
+        }
+        else {
+            documents = await contactService.find()
+        }
+
+    }
+
+    catch (error) {
+        return next(
+            new ApiError(500, "An error occurred while creating the contact")
+        )
+    }
+
+    res.send(documents)
 }
 
 module.exports.findOne = (req, res) => {
