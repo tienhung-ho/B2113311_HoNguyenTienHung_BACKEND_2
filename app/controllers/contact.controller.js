@@ -10,7 +10,6 @@ module.exports.create = async (req, res, next) => {
     try {
         const contactService = new ContactService(MongoDB.client)
         const document = await contactService.create(req.body)
-        console.log(document);
         return res.send(document)
     }
     catch (error) {
@@ -122,8 +121,22 @@ module.exports.delete = async (req, res, next) => {
     }
 }
 
-module.exports.deleteAll = (req, res) => {
-    res.send({ message: 'deleteAll handler'})
+module.exports.deleteAll = async (req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client)
+        const coutDelete = await contactService.deleteAll()
+
+        return res.send({
+            message: `${coutDelete} deleted!`
+        })
+    }
+
+    catch (error) {
+        return next (
+            new ApiError(500, "An error occurred while creating the contact")
+        )
+    }
+    
 }
 
 module.exports.findAllFavorite = async (req, res, next) => {
