@@ -64,12 +64,18 @@ class ContactService {
         )
     }
 
-    async delete (id, payload) {
+    async delete (id) {
         const result = this.Contact.findOneAndDelete({
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         })
 
         return result
+    }
+
+    async findAllFavorite () {
+        return await this.find({
+            favorite: true
+        })
     }
 }
 

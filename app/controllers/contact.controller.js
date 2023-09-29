@@ -126,6 +126,17 @@ module.exports.deleteAll = (req, res) => {
     res.send({ message: 'deleteAll handler'})
 }
 
-module.exports.findAllFavorite = (req, res) => {
-    res.send({ message: 'findAllFavorite handler'})
+module.exports.findAllFavorite = async (req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client)
+        const documents = await contactService.findAllFavorite(); 
+        
+        return res.send(documents)
+    }
+
+    catch (error) {
+        return next (
+            new ApiError(500, "An error occurred while creating the contact")
+        )
+    }
 }
