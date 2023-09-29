@@ -28,7 +28,7 @@ class ContactService {
         const result = await this.Contact.findOneAndUpdate(
             contact,
             { $set: { favorite: contact.favorite === true } },
-            { returnDocument: 'after', upsert: true }
+            { returnDocument: 'after', upsert: true },
         )
         
         return result
@@ -41,7 +41,13 @@ class ContactService {
 
     async findByName (name) {
         return await this.find ({
-            name: { $regex: new RegExp(name), $options: 'i'}
+            name: { $regex: new RegExp(name), $options: 'i'},
+        })
+    }
+
+    async findByID (id) {
+        return await this.Contact.findOne({
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         })
     }
 }
