@@ -63,6 +63,14 @@ class ContactService {
             { returnDocument: 'after' }
         )
     }
+
+    async delete (id, payload) {
+        const result = this.Contact.findOneAndDelete({
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+        })
+
+        return result
+    }
 }
 
 module.exports = ContactService

@@ -94,8 +94,32 @@ module.exports.update = async (req, res, next) => {
     }
 }
 
-module.exports.delete = (req, res, next) => {
+module.exports.delete = async (req, res, next) => {
+    if (Object.keys(req.body).length == 0) {
+        return next (
+            new ApiError(400, "Data can't be empty")
+        )
+    }
 
+    try {
+        const contactService = new ContactService(MongoDB.client)
+        const document = await contactService.delete(req.params.id)
+
+        if (!document) {
+            return next (
+                new ApiError(400, "Contact not found")
+            )
+        }
+
+        return res.send(document)
+
+    }
+
+    catch (error) {
+        return next (
+            new ApiError(500, "An error occurred while creating the contact")
+        )
+    }
 }
 
 module.exports.deleteAll = (req, res) => {
