@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb")
 const ApiError = require("../api-error")
 const ContactService = require("../services/contact.service")
 const MongoDB = require("../untils/mongodb.untils")
@@ -65,12 +66,36 @@ module.exports.findOne = async (req, res, next) => {
     }
 }
 
-module.exports.update = (req, res) => {
-    res.send({ message: 'update handler'})
+module.exports.update = async (req, res, next) => {
+    if (Object.keys(req.body).length === 0) {
+        return next (
+            new ApiError(400, "Data can't be empty")
+        )
+    }
+
+    try {
+        const contactService = new ContactService(MongoDB.client)
+        const documents = await contactService.update(req.params.id, req.body)
+
+        if (!documents) {
+            return next (
+                new ApiError(400, "Contact not found")
+            )
+        }
+
+        return res.send({message: "Contact was updated successfully!"})
+        
+    }
+
+    catch (error) {
+        return next (
+            new ApiError(500, "An error occurred while creating the contact")
+        )
+    }
 }
 
-module.exports.delete = (req, res) => {
-    res.send({ message: 'delete handler'})
+module.exports.delete = (req, res, next) => {
+
 }
 
 module.exports.deleteAll = (req, res) => {
