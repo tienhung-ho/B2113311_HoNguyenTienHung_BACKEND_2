@@ -50,6 +50,19 @@ class ContactService {
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         })
     }
+
+    async update (id, payload) {
+        let filter = {
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null, 
+        }
+
+        const newContact = this.extractContactData(payload)
+        const result = await this.Contact.findOneAndUpdate(
+            filter,
+            { $set: newContact },
+            { returnDocument: 'after' }
+        )
+    }
 }
 
 module.exports = ContactService
