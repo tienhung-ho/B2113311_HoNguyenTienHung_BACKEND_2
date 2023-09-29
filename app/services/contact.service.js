@@ -63,6 +63,26 @@ class ContactService {
             { returnDocument: 'after' }
         )
     }
+
+    async delete (id) {
+        const result = this.Contact.findOneAndDelete({
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+        })
+
+        return result
+    }
+
+    async findAllFavorite () {
+        return await this.find({
+            favorite: true
+        })
+    }
+
+    async deleteAll () {
+        const result = await this.Contact.deleteMany({ })
+
+        return result.deletedCount
+    }
 }
 
 module.exports = ContactService
